@@ -24,9 +24,7 @@ export default function SearchBar({ onSearch }) {
             name="topic"
             placeholder="Search images and photos"
           />
-          <button onSubmit={handleSearch} type="submit">
-            Search
-          </button>
+          <button type="submit">Search</button>
         </form>
       </header>
       <Toaster />

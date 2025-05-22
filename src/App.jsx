@@ -8,6 +8,8 @@ import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 import SearchBar from './components/SearchBar/SearchBar';
 import Modal from 'react-modal';
 import ImageModal from './components/ImageModal/ImageModal';
+import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
+
 // const customStyles = {
 //   content: {
 //     top: '50%',
@@ -28,7 +30,8 @@ function App() {
   const [topic, setTopic] = useState('');
   const [page, setPage] = useState(1);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [searchTrigger, setSearchTrigger] = useState(0);
+  // const [searchTrigger, setSearchTrigger] = useState(0);
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   useEffect(() => {
     if (!topic) return;
@@ -47,20 +50,28 @@ function App() {
       }
     }
     fetchPhotos(topic);
-  }, [topic, page, searchTrigger]);
+  }, [topic, page]);
 
   const handleSearch = newTopic => {
-    if (newTopic === topic) {
-      setSearchTrigger(prev => prev + 1);
-    } else {
-      setTopic(newTopic);
-      setPage(1);
-      setPhotos([]);
-    }
+    setTopic(newTopic);
+    setPage(1);
+    setPhotos([]);
   };
 
   const handlePhotoClick = photo => {
-    setIsOpen(photo);
+    if (!modalIsOpen) {
+      setSelectedPhoto(photo);
+      setIsOpen(true);
+    }
+  };
+
+  const handleLoadPages = () => {
+    setPage(prev => prev + 1);
+  };
+
+  const OnCloseModal = () => {
+    setIsOpen(false);
+    setSelectedPhoto(null);
   };
 
   return (
@@ -78,12 +89,14 @@ function App() {
       {photos.length > 0 && (
         <ImageGallery photos={photos} onClick={handlePhotoClick} />
       )}
-      {photos.length > 0 && (
-        <button onClick={() => setPage(prev => prev + 1)}>Load more</button>
-      )}
-      {modalIsOpen && (
-        <ImageModal modalIsOpen={modalIsOpen} setIsOpen={setIsOpen} />
-      )}
+      {photos.length > 0 && <LoadMoreBtn onClick={handleLoadPages} />}
+      {
+        <ImageModal
+          modalIsOpen={modalIsOpen}
+          photo={selectedPhoto}
+          onCloseModal={OnCloseModal}
+        />
+      }
     </>
   );
 }

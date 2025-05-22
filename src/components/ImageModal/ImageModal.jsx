@@ -11,21 +11,37 @@ const customStyles = {
   },
 };
 
-export default function ImageModal({ modalIsOpen, setIsOpen }) {
-  if (!modalIsOpen || !modalIsOpen.urls) return null;
+export default function ImageModal({
+  modalIsOpen,
+
+  photo,
+  onCloseModal,
+}) {
+  // const regularSize = photo.urls.regular;
+  // const descriptionPhoto = photo.description;
   return (
     <>
       <Modal
-        isOpen={!!modalIsOpen}
-        onRequestClose={() => setIsOpen(false)}
+        isOpen={modalIsOpen}
+        onRequestClose={onCloseModal}
         style={customStyles}
       >
-        <img
-          src={modalIsOpen.urls.regular}
-          alt={modalIsOpen.alt_description || 'Selected photo'}
-          width="100%"
-        />
-        <button onClick={() => setIsOpen(false)}>Close</button>
+        {photo ? (
+          <img
+            src={photo.urls.regular}
+            alt={photo.description || 'Selected photo'}
+            width="100%"
+          />
+        ) : (
+          <p>choose a photo</p>
+        )}
+        <button
+          onClick={() => {
+            onCloseModal();
+          }}
+        >
+          Close
+        </button>
       </Modal>
     </>
   );
